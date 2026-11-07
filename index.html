@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vanguard Growth — Cinematic Digital Systems for High-Ticket Services</title>
+  <meta name="description" content="Cinematic interactive websites, 3D visualization, and automated customer acquisition systems for premier U.S. service enterprises.">
+  
+  <!-- Typography: Inter Display & Archivo -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg: #030508;
+      --surface: #0a0e17;
+      --surface-elevated: #101726;
+      --border: rgba(255, 255, 255, 0.08);
+      --border-active: rgba(255, 255, 255, 0.22);
+      --text: #ffffff;
+      --text-muted: #8b9bb4;
+      --accent: #2563eb;
+      --accent-light: #60a5fa;
+      --accent-glow: rgba(37, 99, 235, 0.25);
+      --success: #10b981;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    html, body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+      line-height: 1.5;
+      font-size: 16px;
+      scroll-behavior: smooth;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { display: none; }
+    html { scrollbar-width: none; }
+
+    /* Interactive 3D Canvas Background */
+    #hero-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* Ambient Lighting */
+    .ambient-beam {
+      position: fixed;
+      top: -150px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 1000px;
+      height: 500px;
+      background: radial-gradient(ellipse at center, rgba(37, 99, 235, 0.18) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 32px;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Navigation */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 100;
+      background: rgba(3, 5, 8, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 80px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--text);
+    }
+    .brand-mark {
+      width: 28px;
+      height: 28px;
+      border: 1.5px solid var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Archivo', sans-serif;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 1px;
+    }
+    .brand-name {
+      font-family: 'Archivo', sans-serif;
+      font-weight: 700;
+      font-size: 18px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      list-style: none;
+    }
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 0.2s ease;
+    }
+    .nav-links a:hover {
+      color: var(--text);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 24px;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      border-radius: 4px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      border: 1px solid transparent;
+      outline: none;
+      font-family: inherit;
+    }
+    .btn-primary {
+      background: #ffffff;
+      color: #030508;
+    }
+    .btn-primary:hover {
+      background: #e2e8f0;
+      transform: translateY(-1px);
+    }
+    .btn-outline {
+      background: transparent;
+      border-color: var(--border-active);
+      color: var(--text);
+    }
+    .btn-outline:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: #ffffff;
+    }
+
+    /* Hero Section */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 140px 0 80px;
+    }
+    .hero-content {
+      max-width: 920px;
+    }
+    .meta-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--accent-light);
+      margin-bottom: 24px;
+    }
+    .meta-tag::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: var(--accent-light);
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--accent-light);
+    }
+    h1.hero-heading {
+      font-family: 'Archivo', sans-serif;
+      font-size: clamp(40px, 6vw, 76px);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -2px;
+      text-transform: uppercase;
+      margin-bottom: 28px;
+    }
+    p.hero-lead {
+      font-size: clamp(16px, 1.8vw, 20px);
+      line-height: 1.6;
+      color: var(--text-muted);
+      max-width: 680px;
+      margin-bottom: 40px;
+    }
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    /* Live Agency Client Metrics */
+    .hero-kpis {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      margin-top: 80px;
+      padding-top: 40px;
+      border-top: 1px solid var(--border);
+      max-width: 800px;
+    }
+    .kpi-num {
+      font-family: 'Archivo', sans-serif;
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .kpi-label {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 4px;
+      letter-spacing: 0.2px;
+    }
+
+    /* Interactive Experience: Configurator Section */
+    section.section-wrapper {
+      padding: 120px 0;
+      position: relative;
+      z-index: 2;
+    }
+    .section-eyebrow {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--accent-light);
+      margin-bottom: 12px;
+    }
+    .section-headline {
+      font-family: 'Archivo', sans-serif;
+      font-size: clamp(28px, 4vw, 44px);
+      font-weight: 700;
+      letter-spacing: -1px;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+    }
+    .section-desc {
+      color: var(--text-muted);
+      font-size: 16px;
+      max-width: 600px;
+      margin-bottom: 48px;
+    }
+
+    /* Dynamic Project Configurator & Interactive Engine */
+    .configurator-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      overflow: hidden;
+      min-height: 560px;
+    }
+
+    .config-controls {
+      padding: 40px;
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: rgba(10, 14, 23, 0.95);
+    }
+    .control-group {
+      margin-bottom: 28px;
+    }
+    .control-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    /* Industry Segment Selector */
+    .segment-selector {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .segment-btn {
+      padding: 14px 16px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 500;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .segment-btn:hover {
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text);
+    }
+    .segment-btn.active {
+      background: #ffffff;
+      color: #030508;
+      font-weight: 600;
+      border-color: #ffffff;
+    }
+
+    /* Range Sliders */
+    .slider-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .range-input {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 4px;
+      background: var(--border-active);
+      border-radius: 2px;
+      outline: none;
+      cursor: pointer;
+    }
+    .range-input::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #ffffff;
+      cursor: pointer;
+    }
+
+    /* Interactive Canvas / Visualizer Output */
+    .config-viewport {
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      background: radial-gradient(circle at 50% 50%, #0d1424 0%, #060911 100%);
+      overflow: hidden;
+    }
+
+    .viewport-topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 16px;
+    }
+    .viewport-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Archivo', monospace;
+      font-size: 12px;
+      color: var(--accent-light);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--success);
+      border-radius: 50%;
+    }
+
+    /* Interactive Preview Screen */
+    .render-stage {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding: 40px 0;
+      text-align: center;
+    }
+    .visual-cube {
+      width: 220px;
+      height: 220px;
+      border: 1px solid rgba(96, 165, 250, 0.3);
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.4s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(37, 99, 235, 0.05);
+    }
+    .visual-cube-inner {
+      font-family: 'Archivo', sans-serif;
+      font-size: 13px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--accent-light);
+    }
+    .stage-readout {
+      margin-top: 32px;
+      max-width: 480px;
+    }
+    .stage-title {
+      font-family: 'Archivo', sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .stage-spec {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    .viewport-footer {
+      border-top: 1px solid var(--border);
+      padding-top: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .calc-price {
+      display: flex;
+      flex-direction: column;
+    }
+    .calc-price span {
+      font-size: 12px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .calc-price strong {
+      font-family: 'Archivo', sans-serif;
+      font-size: 28px;
+      font-weight: 800;
+    }
+
+    /* Lead Modal / Working Capture Form */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .modal-overlay.open {
+      display: flex;
+    }
+    .modal-card {
+      background: var(--surface);
+      border: 1px solid var(--border-active);
+      border-radius: 8px;
+      width: 100%;
+      max-width: 520px;
+      padding: 40px;
+      position: relative;
+    }
+    .modal-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 20px;
+      cursor: pointer;
+    }
+    .modal-title {
+      font-family: 'Archivo', sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .modal-sub {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+    .form-group {
+      margin-bottom: 16px;
+    }
+    .form-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+    .form-input, .form-select {
+      width: 100%;
+      padding: 12px 14px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: #fff;
+      font-family: inherit;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+    .form-input:focus, .form-select:focus {
+      border-color: #ffffff;
+    }
+
+    /* Working Success Screen */
+    .form-success-state {
+      display: none;
+      text-align: center;
+      padding: 24px 0;
+    }
+    .form-success-state h3 {
+      font-family: 'Archivo', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+    .form-success-state p {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* Systems Architecture Grid */
+    .arch-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 40px;
+    }
+    .arch-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 32px;
+      border-radius: 6px;
+      transition: border-color 0.2s ease;
+    }
+    .arch-card:hover {
+      border-color: var(--border-active);
+    }
+    .arch-index {
+      font-family: 'Archivo', monospace;
+      font-size: 12px;
+      color: var(--accent-light);
+      margin-bottom: 16px;
+      display: block;
+    }
+    .arch-title {
+      font-family: 'Archivo', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .arch-desc {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    @media (max-width: 980px) {
+      .configurator-panel {
+        grid-template-columns: 1fr;
+      }
+      .config-controls {
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+      .arch-grid {
+        grid-template-columns: 1fr;
+      }
+      .hero-kpis {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+      .nav-links {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Ambient Cinematic Beam -->
+  <div class="ambient-beam"></div>
+
+  <!-- Interactive ThreeJS/Canvas Layer -->
+  <canvas id="hero-canvas"></canvas>
+
+  <!-- Navigation -->
+  <header>
+    <div class="container">
+      <div class="nav-row">
+        <a href="#" class="brand">
+          <div class="brand-mark">V</div>
+          <span class="brand-name">Vanguard Growth</span>
+        </a>
+
+        <ul class="nav-links">
+          <li><a href="#configurator">Interactive Engine</a></li>
+          <li><a href="#architecture">Architecture</a></li>
+          <li><a href="#pipeline">Acquisition Pipeline</a></li>
+        </ul>
+
+        <button class="btn btn-primary" onclick="openLeadModal('Navigation CTA')">Launch Inquiry</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-content">
+        <div class="meta-tag">High-Ticket Customer Acquisition Infrastructure</div>
+        <h1 class="hero-heading">
+          Cinematic Web Systems Built to Convert High-Ticket Clients.
+        </h1>
+        <p class="hero-lead">
+          We replace static brochure templates with hardware-accelerated interactive web experiences, real-time 3D configurators, and automated GoHighLevel acquisition funnels designed for premier U.S. service contractors.
+        </p>
+        <div class="hero-actions">
+          <a href="#configurator" class="btn btn-primary">Test Interactive Engine</a>
+          <button class="btn btn-outline" onclick="openLeadModal('View Architecture')">Deploy Strategy Call</button>
+        </div>
+
+        <div class="hero-kpis">
+          <div>
+            <div class="kpi-num">60 FPS</div>
+            <div class="kpi-label">Hardware-Accelerated WebGL/Canvas</div>
+          </div>
+          <div>
+            <div class="kpi-num">&lt; 90 Sec</div>
+            <div class="kpi-label">Average Time-to-Lead Follow Up</div>
+          </div>
+          <div>
+            <div class="kpi-num">100% Custom</div>
+            <div class="kpi-label">Zero Bloated Generic Themes</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Service Configurator Section -->
+  <section class="section-wrapper" id="configurator">
+    <div class="container">
+      <div class="section-eyebrow">Interactive Product Experience</div>
+      <h2 class="section-headline">Niche-Engineered System Demonstrator</h2>
+      <p class="section-desc">
+        Select an industry sector below to simulate how interactive visual architecture and automated qualification pipelines engage homeowners and commercial decision-makers.
+      </p>
+
+      <div class="configurator-panel">
+        <!-- Controls Column -->
+        <div class="config-controls">
+          <div>
+            <div class="control-group">
+              <label class="control-label">Target Industry Sector</label>
+              <div class="segment-selector">
+                <button class="segment-btn active" onclick="setSector('general-contractor', this)">
+                  <span>General Contracting</span>
+                  <span>→</span>
+                </button>
+                <button class="segment-btn" onclick="setSector('commercial-roofing', this)">
+                  <span>Commercial & Storm Roofing</span>
+                  <span>→</span>
+                </button>
+                <button class="segment-btn" onclick="setSector('luxury-pools', this)">
+                  <span>Luxury Pools & Outdoor Living</span>
+                  <span>→</span>
+                </button>
+                <button class="segment-btn" onclick="setSector('plumbing-hvac', this)">
+                  <span>24/7 Plumbing & HVAC Services</span>
+                  <span>→</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="control-group">
+              <div class="slider-wrap">
+                <div class="slider-header">
+                  <span class="control-label" style="margin:0;">Project Scale / Tier</span>
+                  <span id="tier-label" style="font-size:13px; font-weight:700;">Full Estate Build</span>
+                </div>
+                <input type="range" class="range-input" id="scale-slider" min="1" max="3" value="3" oninput="updateProjectScale(this.value)">
+              </div>
+            </div>
+          </div>
+
+          <button class="btn btn-primary" style="width:100%;" onclick="openLeadModal('Configurator Result')">
+            Book System Architecture Call
+          </button>
+        </div>
+
+        <!-- Real-Time Interactive Viewport -->
+        <div class="config-viewport">
+          <div class="viewport-topbar">
+            <div class="viewport-status">
+              <span class="status-dot"></span>
+              <span id="system-readout">SYSTEM ACTIVE: CONTRACTOR_BLUEPRINT_VIEW</span>
+            </div>
+            <span style="font-size: 12px; color: var(--text-muted); font-family: monospace;">CANVAS: ACCELERATED</span>
+          </div>
+
+          <div class="render-stage">
+            <div class="visual-cube" id="visual-cube">
+              <div class="visual-cube-inner" id="cube-text">3D MATRIX</div>
+            </div>
+            <div class="stage-readout">
+              <h3 class="stage-title" id="stage-title">General Contracting</h3>
+              <p class="stage-spec" id="stage-spec">
+                Interactive spatial blueprint with instant scope estimation. Connects high-ticket property developers directly to CRM pipeline upon qualification.
+              </p>
+            </div>
+          </div>
+
+          <div class="viewport-footer">
+            <div class="calc-price">
+              <span>Estimated Client Project Value</span>
+              <strong id="price-readout">$150,000 – $500,000+</strong>
+            </div>
+            <button class="btn btn-outline" onclick="openLeadModal('Inspect Integration')">
+              Inspect GHL Pipeline
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Technical Architecture -->
+  <section class="section-wrapper" id="architecture" style="background: rgba(10, 14, 23, 0.4); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+    <div class="container">
+      <div class="section-eyebrow">Enterprise Delivery</div>
+      <h2 class="section-headline">Engineered For Performance & Conversion</h2>
+      <p class="section-desc">
+        Every layer is crafted with bespoke code standards. Zero bloat, instant response, and deep customer acquisition wiring.
+      </p>
+
+      <div class="arch-grid">
+        <div class="arch-card">
+          <span class="arch-index">[01] INTERACTION LAYER</span>
+          <h3 class="arch-title">Hardware-Accelerated 3D & GSAP</h3>
+          <p class="arch-desc">
+            Smooth 60 FPS scroll narratives using WebGL, Three.js, and custom GSAP ScrollTrigger pipelines. Visually stops visitors in their tracks without performance degradation.
+          </p>
+        </div>
+
+        <div class="arch-card">
+          <span class="arch-index">[02] AUTOMATION STACK</span>
+          <h3 class="arch-title">GoHighLevel & CRM Webhooks</h3>
+          <p class="arch-desc">
+            Direct backend connectivity with GoHighLevel pipelines, custom appointment booking flows, and sub-minute automated SMS dispatch triggers.
+          </p>
+        </div>
+
+        <div class="arch-card">
+          <span class="arch-index">[03] AI VOICE & CHAT AGENTS</span>
+          <h3 class="arch-title">Real-Time Lead Triage</h3>
+          <p class="arch-desc">
+            Bespoke conversational AI integrations that triage emergency inbound calls, qualify high-value contracts, and book appointments directly to company calendars.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Modal / Lead Capture Form -->
+  <div class="modal-overlay" id="leadModal">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeLeadModal()">✕</button>
+      
+      <div id="form-container">
+        <h3 class="modal-title">Initiate System Build</h3>
+        <p class="modal-sub">Tell us about your target client acquisition targets. Our technical architects respond within 24 hours.</p>
+
+        <form id="inquiryForm" onsubmit="handleFormSubmit(event)">
+          <div class="form-group">
+            <label class="form-label">Full Name</label>
+            <input type="text" class="form-input" id="client-name" placeholder="Johnathan Vance" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Business / Agency Name</label>
+            <input type="text" class="form-input" id="client-agency" placeholder="Vanguard Growth Group" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Email Address</label>
+            <input type="email" class="form-input" id="client-email" placeholder="jvance@agency.com" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Primary Target Industry</label>
+            <select class="form-select" id="client-industry">
+              <option value="General Contracting">General Contracting / Custom Homes</option>
+              <option value="Commercial Roofing">Commercial Roofing</option>
+              <option value="Luxury Pools">Luxury Pools & Landscapes</option>
+              <option value="Plumbing / HVAC">Emergency Plumbing & HVAC</option>
+              <option value="Other Service">Other Service Enterprise</option>
+            </select>
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 8px;">
+            Submit Architecture Request
+          </button>
+        </form>
+      </div>
+
+      <!-- Live Success Screen -->
+      <div class="form-success-state" id="form-success">
+        <div style="font-size: 32px; color: var(--success); margin-bottom: 12px;">✓</div>
+        <h3>Transmission Confirmed</h3>
+        <p id="success-message">
+          Your project specifications have been ingested into the pipeline. An automated briefing schedule has been sent to your inbox.
+        </p>
+        <button class="btn btn-outline" style="margin-top: 24px;" onclick="closeLeadModal()">
+          Close Window
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Interactive Scripts -->
+  <script>
+    // 1. Mouse Reactive 3D Particle Mesh Canvas
+    const canvas = document.getElementById('hero-canvas');
+    const ctx = canvas.getContext('2d');
+
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+
+    let mouse = { x: width / 2, y: height / 2, targetX: width / 2, targetY: height / 2 };
+
+    window.addEventListener('resize', () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+      buildGrid();
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      mouse.targetX = e.clientX;
+      mouse.targetY = e.clientY;
+    });
+
+    const particles = [];
+    const count = 48;
+
+    function buildGrid() {
+      particles.length = 0;
+      for (let i = 0; i < count; i++) {
+        particles.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          vx: (Math.random() - 0.5) * 0.4,
+          vy: (Math.random() - 0.5) * 0.4,
+          radius: Math.random() * 1.5 + 1
+        });
+      }
+    }
+    buildGrid();
+
+    function renderParticles() {
+      mouse.x += (mouse.targetX - mouse.x) * 0.05;
+      mouse.y += (mouse.targetY - mouse.y) * 0.05;
+
+      ctx.clearRect(0, 0, width, height);
+
+      for (let i = 0; i < particles.length; i++) {
+        const p1 = particles[i];
+        p1.x += p1.vx;
+        p1.y += p1.vy;
+
+        if (p1.x < 0 || p1.x > width) p1.vx *= -1;
+        if (p1.y < 0 || p1.y > height) p1.vy *= -1;
+
+        // Mouse Parallax drift
+        const dx = (mouse.x - width / 2) * 0.02;
+        const dy = (mouse.y - height / 2) * 0.02;
+
+        for (let j = i + 1; j < particles.length; j++) {
+          const p2 = particles[j];
+          const dist = Math.hypot((p1.x + dx) - (p2.x + dx), (p1.y + dy) - (p2.y + dy));
+          if (dist < 180) {
+            ctx.beginPath();
+            ctx.moveTo(p1.x + dx, p1.y + dy);
+            ctx.lineTo(p2.x + dx, p2.y + dy);
+            ctx.strokeStyle = `rgba(37, 99, 235, ${0.15 * (1 - dist / 180)})`;
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          }
+        }
+
+        ctx.beginPath();
+        ctx.arc(p1.x + dx, p1.y + dy, p1.radius, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+        ctx.fill();
+      }
+
+      requestAnimationFrame(renderParticles);
+    }
+    renderParticles();
+
+    // 2. Industry Configurator Logic
+    const sectorData = {
+      'general-contractor': {
+        title: 'General Contracting & Custom Builders',
+        readout: 'SYSTEM ACTIVE: CONTRACTOR_BLUEPRINT_VIEW',
+        spec: 'Interactive spatial blueprint with instant scope estimation. Connects high-ticket property developers directly to CRM pipeline upon qualification.',
+        tierPrices: ['$45,000 – $80,000', '$90,000 – $180,000', '$250,000 – $1,000,000+'],
+        cubeLabel: 'ARCHITECTURAL'
+      },
+      'commercial-roofing': {
+        title: 'Commercial & Storm Roofing Systems',
+        readout: 'SYSTEM ACTIVE: DRONE_AERIAL_DIAGNOSTIC',
+        spec: 'High-resolution aerial storm mapping interface with automated emergency callback triggers dialed into GoHighLevel within 90 seconds.',
+        tierPrices: ['$25,000 – $50,000', '$75,000 – $150,000', '$200,000 – $650,000+'],
+        cubeLabel: 'AERIAL_GRID'
+      },
+      'luxury-pools': {
+        title: 'Luxury Pools & Outdoor Living',
+        readout: 'SYSTEM ACTIVE: REALTIME_WATER_SHADER',
+        spec: '3D outdoor living configurator showcasing day-to-night water caustic transitions. Captures affluent homeowner contact details before rendering custom CAD specs.',
+        tierPrices: ['$60,000 – $100,000', '$120,000 – $220,000', '$300,000 – $750,000+'],
+        cubeLabel: '3D_CAUSTICS'
+      },
+      'plumbing-hvac': {
+        title: '24/7 Commercial Plumbing & HVAC',
+        readout: 'SYSTEM ACTIVE: DISPATCH_VOICE_TRIAGE',
+        spec: 'Instant mobile dispatch interface coupled with an AI Voice agent that handles high-urgency commercial dispatch calls round-the-clock.',
+        tierPrices: ['$5,000 – $15,000', '$20,000 – $60,000', '$80,000 – $250,000+'],
+        cubeLabel: 'DISPATCH_AI'
+      }
+    };
+
+    let currentSector = 'general-contractor';
+    let currentScale = 3;
+
+    function setSector(key, buttonEl) {
+      currentSector = key;
+      document.querySelectorAll('.segment-btn').forEach(btn => btn.classList.remove('active'));
+      buttonEl.classList.add('active');
+      renderConfigState();
+    }
+
+    function updateProjectScale(val) {
+      currentScale = parseInt(val, 10);
+      const tierTitles = ['Standard Commercial', 'Expanded Enterprise', 'Full Estate Build'];
+      document.getElementById('tier-label').innerText = tierTitles[currentScale - 1];
+      renderConfigState();
+    }
+
+    function renderConfigState() {
+      const data = sectorData[currentSector];
+      document.getElementById('system-readout').innerText = data.readout;
+      document.getElementById('stage-title').innerText = data.title;
+      document.getElementById('stage-spec').innerText = data.spec;
+      document.getElementById('cube-text').innerText = data.cubeLabel;
+      document.getElementById('price-readout').innerText = data.tierPrices[currentScale - 1];
+
+      // Cube animation tilt
+      const cube = document.getElementById('visual-cube');
+      const rotY = (currentScale * 15) - 30;
+      cube.style.transform = `rotateY(${rotY}deg) rotateX(10deg)`;
+    }
+
+    // 3. Modal & Working Lead Capture Form
+    const modal = document.getElementById('leadModal');
+
+    function openLeadModal(sourceContext) {
+      modal.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      // Reset form view
+      document.getElementById('form-container').style.display = 'block';
+      document.getElementById('form-success').style.display = 'none';
+    }
+
+    function closeLeadModal() {
+      modal.classList.remove('open');
+      document.body.style.overflow = 'auto';
+    }
+
+    // Close on click outside
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeLeadModal();
+    });
+
+    function handleFormSubmit(e) {
+      e.preventDefault();
+      const name = document.getElementById('client-name').value;
+      const agency = document.getElementById('client-agency').value;
+      const email = document.getElementById('client-email').value;
+      const industry = document.getElementById('client-industry').value;
+
+      // Simulate GHL Webhook pipeline trigger
+      console.log('Ingesting Lead into GoHighLevel Pipeline:', { name, agency, email, industry });
+
+      document.getElementById('form-container').style.display = 'none';
+      document.getElementById('success-message').innerText = `Thank you, ${name}. Project data for "${agency}" (${industry}) has been confirmed. Our team has queued your architecture package.`;
+      document.getElementById('form-success').style.display = 'block';
+    }
+  </script>
+</body>
+</html>
